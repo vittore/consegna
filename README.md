@@ -21,7 +21,8 @@ of the Symfony Documentation.
 --------------------------------
 Run this command:
 
-   php bin/vendors install
+
+    php bin/vendors install
 
 3) Setup your environment
 --------------------------------
