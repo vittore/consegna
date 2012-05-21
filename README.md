@@ -20,11 +20,14 @@ of the Symfony Documentation.
 2) Add symfony2 
 --------------------------------
 Run this command:
+
    php bin/vendors install
 
 3) Setup your environment
 --------------------------------
 Go to folder app/console and edit last lines of config.yml.
+Insert your Microsoft Windows Active Directory Suffix and server IP.
+Setup a shared folder only with teachers.
 
 
 Enjoy!
