@@ -1,0 +1,3 @@
+ConsegnaElaboratiBundle_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: ConsegnaElaboratiBundle:Default:index }

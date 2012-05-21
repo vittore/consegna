@@ -1,31 +1,22 @@
-# symfony files
-vendor/*
-app/bootstrap*
-web/bundles/
-web/css/*
-web/js/*
-web/images/*
-app/cache/*
-app/logs/*
-deps.lock
+.rsync_cache/
 *~
+*.lock
+*.DS_Store
+*.swp
+*.out
+nbproject/
 
-# netbean files
-nbproject/*
- 
-# config files to ignore
-# app/config/parameters.ini
+# Bootstrap
+app/bootstrap*
 
-# phpunit files to ignore
-app/phpunit.xml
+# Symfony directories
+vendor
+vendor/*
+app/logs/*.*
+app/cache/*
+web/uploads/*
+web/bundles/*
 
-# build directories
-build/reports/*
+# Configuration files
+app/config/parameters.ini
 
-# temp directive
-build/*/
-
-# capifony
-.rsync_cache
-
-!*.gitkeep

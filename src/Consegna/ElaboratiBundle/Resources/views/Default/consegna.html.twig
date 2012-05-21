@@ -1,0 +1,155 @@
+{% extends '::base.html.twig' %}
+
+{%block body %}
+
+<h1 class="title webfonts">Consegna elaborati</h1>
+
+<div id="div-ops" style="display:none; margin-top:-40px;margin-left: 380px">
+<a href="" class="readmore">Hai sbagliato? Riparti.</a>
+</div>
+
+<div id="div-username">
+<h2>Inserisci il tuo username:</h2>
+<input type="text" id="username">
+</div>
+<div id="div-password">
+<h2>Inserisci la tua password:</h2>
+<input type="password" id="password">
+</div>
+
+<div id="div-classe" style="display:none">Questo utente non è uno studente.</div>
+<div id="div-insegnanti" style="display:none">
+<h2>Scegli l'insegnante o la materia: 
+<select id="insegnante">
+</select>
+</h2>
+</div>
+
+<div id="div-compito" style="display:none">
+<h2>Scegli la cartella del compito: 
+<select id="compito">
+</select>
+</h2>
+</div>
+
+
+<div id="div-form" style="display:none" class="download">
+
+
+<form id='form'  action="{{ path('upload') }}" method="post" {{ form_enctype(form) }}>
+
+
+
+<h2 style="margin-top: -6px">File da consegnare:</h2>
+{{ form_widget(form) }}
+<div id="div-bottone-consegna"  style="margin-left: 370px;">
+<a href="javascript:void(0);" class="readmore" id="go-consegna">
+Ok, consegno.</a>
+
+</form>
+</div>
+
+
+
+
+<script type="text/javascript">
+$(function(){
+$("#password").keyup(function () {
+$.ajax({
+   type: "GET",
+url: 'checkPassword',
+data: {username: $("#username").val(), password: $("#password").val()},
+success: function(response){
+if (response.stato) {
+    $("#div-classe").show();
+if (response.classe) {
+
+
+$('#form_username').val($('#username').val());
+$('#form_classe').val(response.classe);
+
+$("#div-classe").html("<h2>Studente della classe: <strong>" + response.classe + "</strong></h2>");
+$("#div-password").hide();
+$("#div-username").html("<h2>Username: <strong>" + $('#username').val() + "</strong></h2>");
+$("#div-insegnanti").show();
+$("#div-ops").fadeIn();
+
+var selectElement = $("#insegnante");
+        j=response.insegnanti;
+     var options = '<option value="">Scegli...</option>';
+      for (var i = 0; i < j.length; i++) {
+        options += '<option value="' + j[i].value + '">' + j[i].value + '</option>';
+      }
+      $("#insegnante").html(options);
+}
+    } else {
+    $("#div-classe").hide();
+}
+}
+});
+
+});
+});
+
+
+
+
+$(function(){
+$("#insegnante").change(function () {
+$.ajax({
+   type: "GET",
+url: '../listaCompiti',
+data: {username: $("#form_username").val(), classe: $("#form_classe").val(), insegnante: $('#insegnante').val()},
+success: function(response){
+
+$("#form_insegnante").val($('#insegnante').val());
+
+$("#div-insegnanti").html("<h2>Insegnante: <strong>" + $('#insegnante').val() + "</strong></h2>");
+
+$("#div-compito").show();
+
+var selectElement = $("#compito");
+        j=response.compiti;
+     var options = '<option value="">Scegli...</option>';
+      for (var i = 0; i < j.length; i++) {
+if (j[i].consegnato) {
+       options += '<option disabled value="' + j[i].value + '">' + j[i].value + '</option>';
+} else {
+       options += '<option value="' + j[i].value + '">' + j[i].value + '</option>';
+}
+ 
+      }
+      $("#compito").html(options);
+
+
+}
+})
+})
+})
+
+
+
+
+$(function(){
+$("#compito").change(function () {
+$("#form_compito").val($('#compito').val());
+$("#div-compito").html("<h2>Compito: <strong>" + $('#compito').val() + "</strong></h2>");
+
+$("#div-form").show();
+
+})
+})
+
+
+$(function(){
+$("#go-consegna").click(function () {
+ if (confirm("Sei sicuro di voler consegnare questo file?")) {
+$("#form").submit();
+}
+})
+})
+
+</script>
+
+{% endblock %}
+

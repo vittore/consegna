@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="123.875"
+   height="178.0625"
+   id="svg3380"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="freccia.svg"
+   inkscape:export-filename="/home/vittore/Desktop/progetti/dialogo/web/images/freccia.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs3382">
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask4398">
+      <path
+         style="fill:#ffffff;stroke:none"
+         d="m 255.07547,256.92069 0,123.90625 -12.0625,0.0625 49.59375,52.34375 43.875,-52.90625 -10.6875,0.0625 0,-53.65625 11.75,0 c 0.56308,0 1.11461,-0.0495 1.65625,-0.125 l 0,6.8125 23.84375,-19.25 -23.84375,-23.3125 0,9.75 c -0.54164,-0.0755 -1.09317,-0.125 -1.65625,-0.125 l -11.75,0 0,-43.5625 -70.71875,0 z"
+         id="path4400"
+         inkscape:connector-curvature="0" />
+    </mask>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="55.457542"
+     inkscape:cy="89.726071"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1366"
+     inkscape:window-height="717"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3385">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-369.65625,-252.34375)">
+    <image
+       y="247.31993"
+       x="222.43033"
+       id="image4391"
+       xlink:href="file:///home/vittore/Desktop/progetti/dialogo/web/images/page_header_bg.jpg"
+       height="199.49748"
+       width="150.50508"
+       mask="url(#mask4398)"
+       transform="translate(130.83506,-4.020305)" />
+    <text
+       xml:space="preserve"
+       style="font-size:16.63389587px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:AlMateen;-inkscape-font-specification:AlMateen Bold"
+       x="424.65948"
+       y="277.45386"
+       id="text3070-1"
+       sodipodi:linespacing="100%"
+       transform="scale(0.99081526,1.0092699)"><tspan
+         sodipodi:role="line"
+         x="424.65948"
+         y="277.45386"
+         id="tspan3074-0">esprimi</tspan><tspan
+         sodipodi:role="line"
+         x="424.65948"
+         y="294.08774"
+         id="tspan3280">il tuo</tspan><tspan
+         sodipodi:role="line"
+         x="424.65948"
+         y="310.72165"
+         id="tspan3417">parere</tspan><tspan
+         sodipodi:role="line"
+         x="424.65948"
+         y="327.35556"
+         id="tspan3282" /><tspan
+         sodipodi:role="line"
+         x="424.65948"
+         y="343.98947"
+         id="tspan3288">oppure</tspan><tspan
+         sodipodi:role="line"
+         x="424.65948"
+         y="360.62335"
+         id="tspan3424">discuti</tspan></text>
+  </g>
+</svg>

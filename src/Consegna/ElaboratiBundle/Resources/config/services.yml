@@ -1,0 +1,7 @@
+parameters:
+#    consegna_elaborati.example.class: Consegna\ElaboratiBundle\Example
+
+services:
+#    consegna_elaborati.example:
+#        class: %consegna_elaborati.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

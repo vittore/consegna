@@ -1,0 +1,432 @@
+'properties for target directory
+Const installTypeProp = "ALLUSERS"
+Const targetDirProp = "TARGETDIR"
+'2
+
+'properties for license
+Const useLicenseServerProp = "USE_LICENSE_SERVER"
+Const licenseServerNameProp = "LICENSE_SERVER"
+Const selectedScuProp = "PRODUCT"
+Const serialProp = "PIDKEY"
+Const oldSerialProp = "OLD_PIDKEY"
+'5
+
+'properties for database
+Const amsOperationalDatabaseProp = "AMS_OPERATIONAL_DATABASE"
+Const amsReportingDatabaseProp = "AMS_REPORTING_DATABASE"
+Const amsDropPrevDatabaseProp = "AMS_DROP_PREV_DATABASE"
+'3
+
+'properties for agent (mms properties)
+Const mmsCmsAddressProp = "MMS_CMS_ADDRESS"
+Const mmsCmsUserNameProp = "MMS_CMS_USER_NAME"
+Const mmsCmsPasswordProp = "MMS_CMS_PASSWORD"
+Const mmsUseRemoteUsersProp = "USE_REMOTE_USERS"
+Const mmsRemoteUsersGroupMembersProp = "REMOTE_USERS_GROUP_MEMBERS"
+'5
+
+'properties for service (mms, ams, asn properties)
+Const createNewAccount = "CREATE_NEW_ACCOUNT"
+Const userNameProp = "GS_SERVICE_USERNAME" 
+Const passwordProp = "GS_SERVICE_PASSWORD" 
+Const confirmedPasswordProp = "GS_SERVICE_CONFIRM_PASSWORD"
+'4
+
+'properties for subst_user
+Const createServiceUserProp = "CREATE_SERVICE_USER"
+Const serviceUserNameProp = "SERVICE_USER_NAME"
+Const serviceUserPasswordProp = "SERVICE_USER_PASSWORD"
+'3
+
+'properties for remote installer
+Const zipDirProp = "ZIP_DIR"
+'1
+
+'special properties
+Const ignoreVssRegistrationErrorsProp = "IGNORE_VSS_REGISTRATION_ERRORS"
+Const cepEnabledProp = "ACEP_AGREEMENT"
+'2
+
+'commands for license
+Const licenseServerCom = "/license_server"
+Const licenseOnlineBackupCom = "/online_backup"
+Const licenseAdvancedOnlineBackupCom = "/advanced_online_backup"
+Const licenseSerialCom = "/serial"
+Const oldSerialCom = "/old_serial"
+
+'commands for account
+'Const accountNew = "/account_new"
+Const accountExistingCom = "/account"
+
+Const productedSelectedCom = "/product"
+Const msiPathCom = "/msi_path"
+Const currentUserCom = "/current_user"
+Const targetDirCom = "/target_dir"
+Const remoteUsersCom = "/remote_users"
+
+'commands for ams
+Const amsOperationalDatabaseCom = "/ams_main_db"
+Const amsReportingDatabaseCom = "/ams_reporting_db"
+
+'commands for ams
+Const amsAddressCom = "/ams_address"
+Const amsUserCom = "/ams_user"
+
+'commands for service user
+Const serviceUserCom = "/service_user"
+
+'for remote installer
+Const zipDirCom = "/zip_dir"
+
+'special commands
+Const ignoreVssErrorsCom = "/vss_ignore_errors"
+Const cepEnabledCom = "/cep_enabled"
+
+'another constants
+Const tempCopyName = "temp.msi"
+Const msiOpenDatabaseModeReadOnly = 0
+Const msiOpenDatabaseModeTransact = 1
+
+'hard-coded serials for Online Backup & Advanced Online Backup
+Const obSerial = "QRYQR9W4KB7CNFKNSLH98U6XJXBJFVETM2ZWLBKWAMASHJV9ATPJ4KJ8X6URXAQ7"
+Const aobSerial = "PS2YDPXRVKL8K4EXJEAZHKRL7KBGE3PFPDSJFUJDQKFSPEJM75ZLZKYZGJFHZAQ4"
+
+Dim installer, database, transDatabase
+Dim fsObject, bool
+
+Dim msiPath
+Dim serialKey, licenseServerName, oldSerial
+Dim userName, password
+Dim scuSelected, targetDir
+Dim amsMainDB, amsReportingDB
+Dim amsAddress, amsUser, amsPassword
+Dim serviceUserName, serviceUserPassword
+Dim isCurUser, isIgnoreVssErrs, zipDir, remoteUsers, isOnlineBackup, isAdvancedOnlineBackup
+isCurUser = False
+isIgnoreVssErrs = False
+isCepEnabled = False
+isOnlineBackup = False
+isAdvancedOnlineBackup = False
+
+Const helpScriptName = "<script_name>"
+Const helpMsiPath = "/msi_path <full path to msi>"
+Const helpSerialKey = "/serial <serial key or upgrade serial key>"
+Const helpOldSerialKey = "/old_serial <old serial key> (optional, require /serial)"
+Const helpLicenseServer = "/license_server <path to license server>"
+Const helpOnlineBackup = "/online_backup"
+Const helpAdvancedOnlineBackup = "/advanced_online_backup"
+Const helpProductScu = "/product <SKU acronym> (require /license_server)"
+Const helpAccount = "/account <username> <password> (optional)"
+Const helpCurUser = "/current_user (optional)"
+Const helpTargetDir = "/target_dir <target for installation> (optional)"
+Const helpRemoteUsers = "/remote_users <remote users> (optional)"
+Const helpAmsAddress = "/ams_address <path to ams> (optional)"
+Const helpAmsUser = "/ams_user <user> <password> (optional)"
+Const helpServiceUser = "/service_user <user> <password> (optional)"
+Const helpIgnoreVssErrors = "/vss_ignore_errors (optional)"
+Const helpCepEnabled = "/cep_enabled (optional)"
+'MAIN
+maxIndex = Wscript.Arguments.Count - 1
+
+If (maxIndex < 0) Then
+  Wscript.Echo "The correct use is:" & vbcrlf & _
+               helpScriptName & vbcrlf & _
+               helpMsiPath & vbcrlf & _
+               vbcrlf & _
+               helpSerialKey & vbcrlf & _
+               helpOldSerialKey & vbcrlf & _
+               vbcrlf & _
+               helpLicenseServer & vbcrlf & _
+               helpProductScu & vbcrlf & _
+               vbcrlf & _
+			   helpOnlineBackup & vbcrlf & _
+			   vbcrlf & _
+			   helpAdvancedOnlineBackup & vbcrlf & _
+			   vbcrlf & _
+               helpAccount & vbcrlf & _
+               helpCurUser & vbcrlf & _
+               helpTargetDir & vbcrlf & _
+               helpRemoteUsers & vbcrlf & _
+               vbcrlf & _
+               helpAmsAddress & vbcrlf & _
+               helpAmsUser & vbcrlf & _
+               vbcrlf & _
+               helpServiceUser & vbcrlf & _
+               vbcrlf & _
+               helpIgnoreVssErrors & vbcrlf & _
+               vbcrlf & _
+		   helpCepEnabled
+
+               
+  Wscript.Quit
+End If
+
+'begin of parsing
+For index = 0 to maxIndex
+  argumentTemp = Wscript.Arguments(index)
+  
+  if (StrComp(Left(argumentTemp, 1), "/") = 0) Then
+    Select Case argumentTemp
+      Case licenseServerCom
+        If ((Len(serialKey) <> 0) Or (Len(licenseServerName) <> 0) Or (isOnlineBackup) Or (isAdvancedOnlineBackup)) Then
+          Wscript.Echo "Online Backup parameter, Advanced Online Backup parameter, Serial key or license server name already defined"
+          Wscript.Quit
+        Else
+          call OneArgument(index, licenseServerName)
+        End If
+      Case licenseSerialCom
+        If ((Len(licenseServerName) <> 0) Or (Len(serialKey) <> 0) Or (isOnlineBackup) Or (isAdvancedOnlineBackup)) Then
+          Wscript.Echo "Online Backup parameter, Advanced Online Backup parameter, Serial key or license server name already defined"
+          Wscript.Quit
+        Else
+          call OneArgument(index, serialKey)
+        End If
+      Case oldSerialCom
+        If ((Len(licenseServerName) <> 0) Or (Len(oldSerial) <> 0)) Then
+          Wscript.Echo "License server name or old serial key already defined"
+          Wscript.Quit
+        Else
+          call OneArgument(index, oldSerial)
+        End If
+      Case accountExistingCom
+        call TwoArguments(index, userName, password)
+      Case productedSelectedCom
+        call OneArgument(index, scuSelected)
+      Case msiPathCom
+        call OneArgument(index, msiPath)
+      Case currentUserCom
+        isCurUser = True
+      Case ignoreVssErrorsCom
+        isIgnoreVssErrs = True
+      Case cepEnabledCom
+        isCepEnabled = True
+      Case targetDirCom
+        call OneArgument(index, targetDir)
+      Case amsOperationalDatabaseCom
+        call OneArgument(index, amsMainDB)
+      Case amsReportingDatabaseCom
+        call OneArgument(index, amsReportingDB)
+      Case amsAddressCom
+        call OneArgument(index, amsAddress)
+      Case amsUserCom
+        call TwoArguments(index, amsUser, amsPassword)
+      Case serviceUserCom
+        call TwoArguments(index, serviceUserName, serviceUserPassword)
+      Case zipDirCom
+        call OneArgument(index, zipDir)
+      Case remoteUsersCom
+        call OneArgument(index, remoteUsers)
+	  Case licenseOnlineBackupCom
+	    If ((Len(licenseServerName) <> 0) Or (Len(serialKey) <> 0) Or (isOnlineBackup) Or (isAdvancedOnlineBackup)) Then
+          Wscript.Echo "Online Backup parameter, Advanced Online Backup parameter, Serial key or license server name already defined"
+          Wscript.Quit
+        Else
+          isOnlineBackup = True
+        End If
+	  Case licenseAdvancedOnlineBackupCom
+	    If ((Len(licenseServerName) <> 0) Or (Len(serialKey) <> 0) Or (isOnlineBackup) Or (isAdvancedOnlineBackup)) Then
+          Wscript.Echo "Online Backup parameter, Advanced Online Backup parameter, Serial key or license server name already defined"
+          Wscript.Quit
+        Else
+          isAdvancedOnlineBackup = True
+        End If
+    Case Else
+        Wscript.Echo "Unknown command " & Wscript.Arguments(index)
+        Wscript.Quit
+    End Select
+  End If
+Next
+'end of parsing
+
+Set fsObject = CreateObject("Scripting.FileSystemObject")
+bool = fsObject.FileExists(msiPath) 
+Set fsObject = Nothing
+If (bool = False) Then 
+  Wscript.Echo "Error: invalid file path."
+  Wscript.Quit
+End If
+
+tempCopyPath = CreateTempCopy(msiPath, tempCopyName)
+
+Set installer = CreateObject("WindowsInstaller.Installer") 
+On Error Resume Next
+Set database = installer.OpenDatabase(msiPath, msiOpenDatabaseModeReadOnly)
+If Err.Number <> 0 Then
+  Wscript.Echo "Error: can not open .msi database!"
+  Wscript.Quit
+End IF
+
+Set installer = CreateObject("WindowsInstaller.Installer") 
+On Error Resume Next
+Set transDatabase = installer.OpenDatabase(tempCopyPath, msiOpenDatabaseModeTransact)
+If Err.Number <> 0 Then
+  Wscript.Echo "Error: can not open .msi database!"
+  Wscript.Quit
+End IF  
+
+call AddProperty(transDatabase, serialProp, serialKey, False)
+call AddProperty(transDatabase, licenseServerNameProp, licenseServerName, False)
+
+If (Len(licenseServerName) <> 0) Then
+  call AddProperty(transDatabase, selectedScuProp, scuSelected, True)
+  call AddProperty(transDatabase, useLicenseServerProp, "1", False)
+ElseIf (Len(serialKey) <> 0) Then
+  call AddProperty(transDatabase, useLicenseServerProp, "2", False)
+  call AddProperty(transDatabase, oldSerialProp, oldSerial, False)
+ElseIf (isOnlineBackup) Then
+  call AddProperty(transDatabase, useLicenseServerProp, "3", False)
+  call AddProperty(transDatabase, serialProp, obSerial, False)
+ElseIf (isAdvancedOnlineBackup) Then
+  call AddProperty(transDatabase, useLicenseServerProp, "4", False)
+  call AddProperty(transDatabase, serialProp, aobSerial, False)
+End If
+
+call AddProperty(transDatabase, userNameProp, userName, False)
+
+If (Len(userName) <> 0) Then
+  call AddProperty(transDatabase, passwordProp, password, False)
+  call AddProperty(transDatabase, confirmedPasswordProp, password, False)
+Else
+  call AddProperty(transDatabase, createNewAccount, "1", False)
+End If
+
+If (isCurUser = False) Then
+  call AddProperty(transDatabase, installTypeProp, "2", False)
+Else
+  call AddProperty(transDatabase, installTypeProp, "", True)
+End If
+
+If (isIgnoreVssErrs = True) Then
+  call AddProperty(transDatabase, ignoreVssRegistrationErrorsProp, "1", False)
+End If
+
+If (isCepEnabled = True) Then
+  call AddProperty(transDatabase, cepEnabledProp, "1", False)
+End If
+
+call AddProperty(transDatabase, targetDirProp, targetDir, False)
+call AddProperty(transDatabase, amsOperationalDatabaseProp, amsMainDB, False)
+call AddProperty(transDatabase, amsReportingDatabaseProp, amsReportingDB, False)
+
+If (Len(amsMainDB) <> 0) Then
+  call AddProperty(transDatabase, amsDropPrevDatabaseProp, "1", False)
+End If
+
+call AddProperty(transDatabase, mmsCmsAddressProp, amsAddress, False)
+call AddProperty(transDatabase, mmsCmsUserNameProp, amsUser, False)
+
+If (Len(amsUser) <> 0) Then
+  call AddProperty(transDatabase, mmsCmsPasswordProp, amsPassword, False)
+End If
+
+call AddProperty(transDatabase, serviceUserNameProp, serviceUserName, False)
+
+If (Len(serviceUserName) <> 0) Then
+  call AddProperty(transDatabase, serviceUserPasswordProp, serviceUserPassword, False)
+Else
+  call AddProperty(transDatabase, createServiceUserProp, "1", False)
+End If
+
+call AddProperty(transDatabase, zipDirProp, zipDir, False)
+call AddProperty(transDatabase, mmsRemoteUsersGroupMembersProp, remoteUsers, False)
+
+If (Len(remoteUsers) <> 0) Then
+  call AddProperty(transDatabase, mmsUseRemoteUsersProp, "1", False)
+End If
+
+On Error Resume Next
+call transDatabase.GenerateTransform(database, Left(msiPath, Len(msiPath)-4) + ".mst")
+call transDataBase.CreateTransformSummaryInfo(database, Left(msiPath, Len(msiPath)-4) + ".mst", 0, 0)
+If Err.Number <> 0 Then
+  Wscript.Echo "Error: can not create a transform file!"
+End IF  
+
+Set database = Nothing
+Set transDatabase =  Nothing
+
+Set fsObject = CreateObject("Scripting.FileSystemObject")
+If fsObject.FileExists(tempCopyPath) Then
+  fsObject.DeleteFile(tempCopyPath)
+End If  
+'End If
+
+'Procedure for adding new property for the Property Table of a .msi file
+Sub AddProperty(database, propert, value, ByVal forceSet)
+  If ((Len(value) <> 0) Or (forceSet = True)) Then
+    Dim view, record
+    
+    Set view = database.OpenView("SELECT * FROM `Property` WHERE `Property` = '" & propert & "'") 
+    view.Execute 
+    
+    Set record = view.Fetch 
+    view.Close
+    If Not (record Is Nothing) Then 
+      Set view = database.OpenView("UPDATE Property SET Value = '" & value & "' WHERE Property = '" & propert & "'") 
+    Else 
+      Set view = database.OpenView("INSERT INTO Property(Property.Property, Property.Value) VALUES('" & propert & "', '" & value & "')") 
+    End If 
+    view.Execute
+    view.Close
+    Set view = Nothing
+  End If
+End Sub
+
+'Function for creating a temporary copy of .msi file
+Function CreateTempCopy(msiPath, tempCopyName)
+  Dim fsObjectCopy
+  
+  Set fsObject = CreateObject("Scripting.FileSystemObject")
+  msiFileName = fsObject.GetFileName(msiPath)
+  msiFolderName = fsObject.GetFolder(Left(msiPath,Len(msiPath)-Len(msiFileName)))
+  Set fsObjectCopy = fsObject.GetFile(msiPath)
+  fsObjectCopy.Copy(msiFolderName + "\" + tempCopyName)
+  CreateTempCopy = msiFolderName + "\" + tempCopyName
+End Function
+
+Sub OneArgument(commandIndex, argument)  
+  If (Len(argument) <> 0) Then
+    Wscript.Echo Wscript.Arguments(commandIndex) & " already defined"
+    Wscript.Quit
+  Else
+    If (commandIndex + 1 > maxIndex) Then
+      Wscript.Echo "Command " & Wscript.Arguments(commandIndex) & " has no parameter"
+      Wscript.Quit
+    End If
+    
+    Dim commandArgument
+    commandArgument = Wscript.Arguments(commandIndex + 1)
+    
+    if (StrComp(Left(commandArgument, 1), "/") = 0) Then
+      Wscript.Echo "Command " & Wscript.Arguments(commandIndex) & " has no parameter"
+      Wscript.Quit
+    Else
+      argument = commandArgument
+      commandIndex = commandIndex + 1
+    End If
+  End If
+End Sub
+
+Sub TwoArguments(commandIndex, argument1, argument2)  
+  If (Len(argument1) <> 0) Then
+    Wscript.Echo Wscript.Arguments(commandIndex) & " already defined"
+    Wscript.Quit
+  Else
+    If (commandIndex + 2 > maxIndex) Then
+      Wscript.Echo "Command " & Wscript.Arguments(commandIndex) & " hasn't enough parameters"
+      Wscript.Quit
+    End If
+    
+    Dim commandArgument1, commandArgument2
+    commandArgument1 = Wscript.Arguments(commandIndex + 1)
+    commandArgument2 = Wscript.Arguments(commandIndex + 2)
+    
+    if ((StrComp(Left(commandArgument1, 1), "/") = 0) Or (StrComp(Left(commandArgument2, 1), "/") = 0)) Then
+      Wscript.Echo "Wrong parameters for " & Wscript.Arguments(commandIndex + 1) & " command"
+      Wscript.Quit
+    Else
+      argument1 = commandArgument1
+      argument2 = commandArgument2
+      commandIndex = commandIndex + 2
+    End If
+  End If
+End Sub

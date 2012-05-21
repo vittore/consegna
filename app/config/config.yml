@@ -20,6 +20,7 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+        
 
 # Assetic Configuration
 assetic:
@@ -58,3 +59,24 @@ swiftmailer:
 jms_security_extra:
     secure_controllers:  true
     secure_all_services: false
+
+
+      
+    
+    
+parameters:
+    ad_ldap:
+       account_suffix: issm2
+       base_dn: DC=issm2
+       domain_controllers:
+           - 10.10.176.1
+       real_primarygroup: true
+       use_ssl: false
+    consegna_elaborati:
+       cartella: ../filesRepository
+       estensioni_permesse:
+           - zip
+           - pdf
+           - doc
+           - ai
+    

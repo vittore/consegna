@@ -1,0 +1,26 @@
+{% extends '::base.html.twig' %}
+
+{%block body %}
+
+{% if (errore) %}
+<div class="alert">
+{{ messaggio }}
+<p>
+Ti ricordo che i tipi di file che puoi caricare sono:
+<ol class="disc">
+ {%- for estensione in estensioni %}
+   <li>{{ estensione }}</li>
+ {% endfor %}
+</ol>
+</div>
+{% else %}
+<div class="info">
+{{ messaggio }}
+
+</div>
+{% endif %}
+<div id="div-bottone-consegna"  style="margin-left: 300px;">
+<a href="{{ path ('consegna') }}" class="readmore">
+Ritorna alla pagina precedente</a>
+{% endblock %}
+

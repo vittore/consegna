@@ -2,12 +2,179 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}Consegna elaborati{% endblock %}</title>
+        {% block stylesheets %}
+        <link href="{{ asset('css/main.css') }}" type="text/css" rel="stylesheet" />
+        {% endblock %}
+
+               {% block javascripts %}
+                    <script src="{{ asset('js/jquery-1.7.min.js') }}" type="text/javascript"></script>
+        {% endblock %}
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+
     </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
-</html>
+
+    <body id="page" class="zenpage  column-contentright   style-paper font-default  contentwrapper  ">
+
+        <div id="absolute">
+        {% block absolute %}
+        {% endblock %}
+        </div>
+
+        <div id="page-header">
+            <div class="page-header-1">
+                <div class="wrapper">
+                    <div id="header">
+
+
+<div id="toolbar">
+						
+												
+												<div class="right">
+							<div class="module mod-blank   first ">
+
+	
+		
+	
+
+		
+	
+</div>						</div>
+												
+												
+												
+					</div>
+
+                        <div style="visibility: visible; width: 660px;" id="menu">
+                            
+                            </div>
+
+
+                            <div id="logo">
+                                <a class="logo-icon correct-png" href="{{ path('homepage') }}" title="Home"></a>					
+                                </div>
+                            </div>
+                            <!-- header end -->				
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+
+
+		<div id="page-top">
+{% block top %}
+<div class="page-top-1">
+			<div class="page-top-2">
+				<div class="wrapper">
+<div id="top">
+                            </div>
+                        </div>	
+                    </div>
+                 </div>
+
+{% endblock %}
+</div>
+
+
+
+                <div id="page-body">
+                    <div class="page-body-1">
+                        <div class="page-body-2">
+
+                            <div class="wrapper">
+
+                                <div class="middle-wrapper">
+                                    <div id="middle">
+                                        <div id="middle-expand">
+
+                                            <div id="main">
+                                                <div id="main-shift">
+
+
+                                                    <div id="mainmiddle">
+                                                        <div id="mainmiddle-expand">
+{% block body %}
+
+{% endblock %}
+                                                                <!-- content end -->
+
+
+                                                                <div id="contentright" class="vertical">
+                                                                    <div class="contentright-1"></div>
+{% block discussioniTop %}
+{% endblock %}
+
+
+                                                                   
+
+{% block tagTop %}
+{% endblock %}
+
+
+
+                                                                    												</div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- mainmiddle end -->
+
+
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="page-bottom">
+                        <div class="page-bottom-1">
+                            <div class="page-bottom-2">
+
+                                <div class="wrapper">
+
+
+                                    <div id="bottom">
+                         
+                                        <div class="vertical width100">
+                                            <div class="module style-frame   first last">
+                                                <div class="homebottomimage"></div>		
+                                            </div>						</div>
+                                    </div>
+                                    <!-- bottom end -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="page-footer">
+                        <div class="wrapper">
+                            <div id="footer">
+                                <a class="anchor" href="#page"></a>Copyright © 2012 Staff informatico (aka <a href="http://it.linkedin.com/pub/alberto-gavagnin/5/b61/407">Alberto Gavagnin</a> & <a href="http://it.linkedin.com/in/vittorezen">Vittore Zen</a>)
+                            </div>
+                            <!-- footer end -->
+
+                        </div>
+                    </div>
+
+
+
+                    <div id="shadowbox_overlay"></div><div id="shadowbox_container"><div id="shadowbox"><div id="shadowbox_title"><div id="shadowbox_title_inner"></div></div><div id="shadowbox_body"><div id="shadowbox_body_inner"></div><div id="shadowbox_loading"></div></div><div id="shadowbox_toolbar"><div id="shadowbox_toolbar_inner"></div></div></div></div>
+
+
+
+
+
+        </html>
