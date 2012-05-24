@@ -1,5 +1,4 @@
 <?php
-
 namespace Consegna\ElaboratiBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,8 +12,9 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use adLDAP;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Consegna\ElaboratiBundle\Studente;
 
 class DefaultController extends Controller {
 
@@ -50,65 +50,48 @@ class DefaultController extends Controller {
         $request = $this->get('Request');
         $username = $request->get('username');
         $password = $request->get('password');
-        $return = false;
-        $classe = false;
+        
+        $adConfig = $this->container->getParameter('ad_ldap');
+        
+        $studente = new Studente($adConfig);
         $insegnanti = false;
         $stato = false;
-        if (($username) and ($password)) {
-            $adConfig = $this->container->getParameter('ad_ldap');
-            $adConfig['account_suffix'] = '@' . $adConfig['account_suffix'];
-            $ldap = new adLDAP($adConfig);
-            $ldap->connect();
-            $return = $ldap->authenticate($username, $password);
-        }
-        if ($return) {
-
-            $memberOf = false;
-            while ($memberOf == false) {
-                $info = $ldap->user_info($username);
-                if (array_key_exists(0, $info)) {
-                    if (array_key_exists('memberof', $info[0])) {
-                        $memberOf = $info[0]['memberof'];
+        if ($studente->checkPassword($username,$password)==true) {
+            $stato=false;
+                            if ($studente->getClasse()) {
+                    $consegnaConfig = $this->container->getParameter('consegna_elaborati');
+                    $dirConsegna = $consegnaConfig['cartella'] . "/" . $studente->getClasse();
+                    if (!file_exists($dirConsegna)) {
+                        mkdir($dirConsegna);
                     }
-                }
-            }
-            foreach ($memberOf as $cn) {
-                if ((substr($cn, 0, 4) == "CN=_") and
-                        (substr($cn, 7, 1) == ",")) {
-                    $classe = substr($cn, 4, 3);
-                    break;
-                }
-            }
-            if ($classe) {
-                $consegnaConfig = $this->container->getParameter('consegna_elaborati');
-                $dirConsegna = $consegnaConfig['cartella'] . "/" . $classe;
-                if (!file_exists($dirConsegna)) {
-                    mkdir($dirConsegna);
-                }
-                $d = dir($dirConsegna);
-                $insegnanti = array();
-                while (false !== ($entry = $d->read())) {
-                    if (substr($entry, 0, 1) == '.') {
-                        continue;
-                    }
-                    $d2 = dir($dirConsegna . "/" . $entry);
-                    $haSottoCartelle = false;
-                    while (false !== ($entry2 = $d2->read())) {
+                    $d = dir($dirConsegna);
+                    $insegnanti = array();
+                    while (false !== ($entry = $d->read())) {
                         if (substr($entry, 0, 1) == '.') {
                             continue;
                         }
-                        $haSottoCartelle = true;
+                        $d2 = dir($dirConsegna . "/" . $entry);
+                        $haSottoCartelle = false;
+                        while (false !== ($entry2 = $d2->read())) {
+                            if (substr($entry, 0, 1) == '.') {
+                                continue;
+                            }
+                            $haSottoCartelle = true;
+                        }
+                        $d2->close();
+                        if ($haSottoCartelle) {
+                            $stato = true;
+                            $insegnanti[] = array("value" => $entry);
+                        }
                     }
-                    $d2->close();
-                    if ($haSottoCartelle) {
-                        $stato = true;
-                        $insegnanti[] = array("value" => $entry);
-                    }
+                    $d->close();
                 }
-                $d->close();
+                $response = new Response(json_encode(array('stato' => $stato, "classe" => $studente->getClasse(), "insegnanti" => $insegnanti)));
+            } else {
+        $response = new Response(json_encode(array('stato'=>false)));
             }
-        }
-        $response = new Response(json_encode(array('stato' => $stato, "classe" => $classe, "insegnanti" => $insegnanti)));
+        
+     
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
