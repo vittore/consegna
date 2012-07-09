@@ -28,7 +28,7 @@ class StudenteTest extends \PHPUnit_Framework_testCase
     }
     public function testCheckPasswordWithBadPassword()
     {
-        $username="studentUser";
+        $username="utente.test";
         $password="caio";
         $studente = new Studente($this->adConfig);
         $this->assertFalse($studente->checkPassword($username,$password));
@@ -36,12 +36,56 @@ class StudenteTest extends \PHPUnit_Framework_testCase
     }
     public function testCheckPasswordWithGoodPassword()
     {
-        $username="v.zen";
-        $password="Zne22vtr";
+        $username="utente.test";
+        $password="mypassword";
         $studente = new Studente($this->adConfig);
         $this->assertTrue($studente->checkPassword($username,$password));
         
     }
+    
+    public function testGetMemberOf()
+    {
+        $username="utente.test";
+        $password="mypassword";
+        $studente = new Studente($this->adConfig);
+        $studente->checkPassword($username,$password);
+        $this->assertTrue($studente->getMemberOf()==array(
+    'count' => 5,
+    0 => 'CN=_IUSVE,DC=issm2',
+    1 => 'CN=igroove_users,DC=issm2',
+    2 => 'CN=internetWireless,DC=issm2',
+    3 => 'CN=internetLAN,DC=issm2',
+    4 => 'CN=Domain Users,CN=Users,DC=issm2'
+));
+        
+    }
+    
+        public function testGetClasse()
+    {
+        $username="utente.test";
+        $password="mypassword";
+        $studente = new Studente($this->adConfig);
+        $studente->checkPassword($username,$password);
+        $this->assertTrue($studente->getClasse()=='IUSVE');
+    }
+    
+    
+        
+        public function testGetClasseSingleLine()
+    {
+        $username="utente.test";
+        $password="mypassword";
+        $studente = new Studente($this->adConfig,$username,$password);
+        $this->assertTrue($studente->getClasse()=='IUSVE');
+    }
 
+            public function testGetName()
+    {
+        $username="utente.test";
+        $password="mypassword";
+        $studente = new Studente($this->adConfig,$username,$password);
+        $this->assertTrue($studente->getFirstname()=='Utente');
+        $this->assertTrue($studente->getLastname()=='Test');
+    }
     
 }

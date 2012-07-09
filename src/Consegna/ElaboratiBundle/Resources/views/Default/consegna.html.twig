@@ -70,7 +70,7 @@ $('#form_classe').val(response.classe);
 
 $("#div-classe").html("<h2>Studente della classe: <strong>" + response.classe + "</strong></h2>");
 $("#div-password").hide();
-$("#div-username").html("<h2>Username: <strong>" + $('#username').val() + "</strong></h2>");
+$("#div-username").html("<h2>Studente: <strong>" + response.lastname + " " + response.firstname +  "</strong></h2>");
 $("#div-insegnanti").show();
 $("#div-ops").fadeIn();
 

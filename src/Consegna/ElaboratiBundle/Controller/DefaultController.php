@@ -58,7 +58,8 @@ class DefaultController extends Controller {
         $stato = false;
         if ($studente->checkPassword($username,$password)==true) {
             $stato=false;
-                            if ($studente->getClasse()) {
+            
+                    if (($studente->getFirstname()) and ($studente->getClasse())) {
                     $consegnaConfig = $this->container->getParameter('consegna_elaborati');
                     $dirConsegna = $consegnaConfig['cartella'] . "/" . $studente->getClasse();
                     if (!file_exists($dirConsegna)) {
@@ -86,7 +87,13 @@ class DefaultController extends Controller {
                     }
                     $d->close();
                 }
-                $response = new Response(json_encode(array('stato' => $stato, "classe" => $studente->getClasse(), "insegnanti" => $insegnanti)));
+                $response = new Response(
+                        json_encode(
+                                array('stato' => $stato, 
+                                     'firstname' => $studente->getFirstname(),
+                                    'lastname' => $studente->getLastname(),
+                                    "classe" => $studente->getClasse(),
+                                    "insegnanti" => $insegnanti)));
             } else {
         $response = new Response(json_encode(array('stato'=>false)));
             }
