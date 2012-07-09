@@ -33,18 +33,20 @@
 </div>
 
 
-<div id="div-form" style="display:none" class="download">
+<div id="div-form" style="display:none123" class="download">
 
 
-<form id='form'  action="{{ path('upload') }}" method="post" {{ form_enctype(form) }}>
-
-
-
+<form id='form'  action="{{ path('upload') }}" method="post" enctype="multipart/form-data">
 <h2 style="margin-top: -6px">File da consegnare:</h2>
-{{ form_widget(form) }}
+<input type="file" id="files[0]" name="files[0]" required="required"><br>
+<div id="altri-file"></div>
+<div id="div-bottone-altro-file">
+<a href="javascript:void(0);" class="readmore" id="altro-file">+ aggiungi un file</a>
+</div>
+
 <div id="div-bottone-consegna"  style="margin-left: 370px;">
 <a href="javascript:void(0);" class="readmore" id="go-consegna">
-Ok, consegno.</a>
+Ok, consegno.</a></div>
 
 </form>
 </div>
@@ -54,6 +56,7 @@ Ok, consegno.</a>
 
 <script type="text/javascript">
 $(function(){
+filesCount=0;
 $("#password").keyup(function () {
 $.ajax({
    type: "GET",
@@ -148,6 +151,14 @@ $("#form").submit();
 }
 })
 })
+
+$(function(){
+$("#altro-file").click(function () {
+filesCount=filesCount+1;
+$("#altri-file").before("<input type=\"file\" id=\"files["+filesCount+"]\" name=\"files["+filesCount+"]\"><br>");
+})
+})
+
 
 </script>
 

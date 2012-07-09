@@ -31,15 +31,7 @@ class DefaultController extends Controller {
      * @Template
      */
     public function consegnaAction() {
-        $form = $this->get('form.factory')
-                ->createBuilder('form')
-                ->add('username', 'hidden')
-                ->add('classe', 'hidden')
-                ->add('insegnante', 'hidden')
-                ->add('compito', 'hidden')
-                ->add("dataFile", "file", array("required" => true))
-                ->getForm();
-        return $this->render('ConsegnaElaboratiBundle:Default:consegna.html.twig', array("form" => $form->createView()));
+        return $this->render('ConsegnaElaboratiBundle:Default:consegna.html.twig');
     }
 
     /**
@@ -158,7 +150,11 @@ class DefaultController extends Controller {
                 ->add('classe', 'hidden')
                 ->add('insegnante', 'hidden')
                 ->add('compito', 'hidden')
-                ->add("dataFile", "file", array("required" => true))
+                ->add('files','file',array(
+                    "attr" => array(
+                        "accept" => "image/*",
+                        "multiple" => "multiple",
+                    )))
                 ->getForm();
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
@@ -168,7 +164,9 @@ class DefaultController extends Controller {
                 $estensioniPermesse = $consegnaConfig['estensioni_permesse'];
                 $files = $request->files->get($form->getName());
                 $data = $form->getData();
-                $uploadedFile = $files["dataFile"]; //"dataFile" is the name on the field
+                $uploadedFiles = $files["files"]; //"dataFile" is the name on the field
+                var_dump($uploadedFiles);
+                die;
                 $ext = strtolower(substr($uploadedFile->getClientOriginalName(), strrpos($uploadedFile->getClientOriginalName(), '.') + 1));
                 if (in_array($ext, $estensioniPermesse)) {
                     $dirConsegna = $consegnaConfig['cartella'] . "/" .

@@ -63,12 +63,18 @@ class Studente
 
     
         public function getFirstname() {
-            $this->firstname='Utente';
+            if ($this->firstname == false) {
+           $info = $this->ldap->user_info($this->username, array("*"));
+           $this->firstname=$info[0]['givenname'][0];
+            }
         return $this->firstname;
     }
     
     public function getLastname() {
-            $this->firstname='Test';
-        return $this->firstname;
+            if ($this->lastname == false) {
+           $info = $this->ldap->user_info($this->username, array("*"));
+           $this->lastname=$info[0]['sn'][0];
+            }
+       return $this->lastname;
     }
 }
