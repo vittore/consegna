@@ -79,18 +79,22 @@ class DefaultController extends Controller {
                     }
                     $d->close();
                 }
-                $response = new Response(
-                        json_encode(
-                                array('stato' => $stato, 
+                $elements=array('stato' => $stato, 
                                      'firstname' => $studente->getFirstname(),
                                     'lastname' => $studente->getLastname(),
                                     "classe" => $studente->getClasse(),
-                                    "insegnanti" => $insegnanti)));
+                                    "insegnanti" => $insegnanti);
+                $response = new Response(json_encode($elements));
+                $session = $this->getRequest()->getSession();
+                foreach ($elements as $key => $value) {
+                 $session->set($key,$value);
+                }
+                
             } else {
         $response = new Response(json_encode(array('stato'=>false)));
             }
         
-     
+    
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
@@ -134,6 +138,7 @@ class DefaultController extends Controller {
             $compiti[] = array("value" => $entry, "consegnato" => $consegnato);
         }
         $d->close();
+        
         $response = new Response(json_encode(array('compiti' => $compiti)));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
@@ -144,51 +149,45 @@ class DefaultController extends Controller {
      * @Template
      */
     public function uploadAction() {
+        $session = $this->getRequest()->getSession(); 
         $form = $this->get('form.factory')
                 ->createBuilder('form')
-                ->add('username', 'hidden')
-                ->add('classe', 'hidden')
-                ->add('insegnante', 'hidden')
-                ->add('compito', 'hidden')
                 ->add('files','file',array(
                     "attr" => array(
-                        "accept" => "image/*",
                         "multiple" => "multiple",
                     )))
                 ->getForm();
+        
+        
+         
+        
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
-            $form->bindRequest($request);
-            if ($form->isValid()) {
+$form->bindRequest($request);
+var_dump($form->isValid()) ;
+            
                 $consegnaConfig = $this->container->getParameter('consegna_elaborati');
-                $estensioniPermesse = $consegnaConfig['estensioni_permesse'];
-                $files = $request->files->get($form->getName());
-                $data = $form->getData();
+                $files =  $form->get('files');
+                
+            var_dump($files['files']);
+                /*
                 $uploadedFiles = $files["files"]; //"dataFile" is the name on the field
-                var_dump($uploadedFiles);
-                die;
+                //var_dump($files);
+                //die;
                 $ext = strtolower(substr($uploadedFile->getClientOriginalName(), strrpos($uploadedFile->getClientOriginalName(), '.') + 1));
-                if (in_array($ext, $estensioniPermesse)) {
+               
                     $dirConsegna = $consegnaConfig['cartella'] . "/" .
                             $data['classe'] . "/" .
                             $data['insegnante'] . "/" .
                             $data['compito'];
                     $uploadedFile->move($dirConsegna, $data['username'] . '.' . $ext);
                     $msg = 'File consegnato con successo!';
-                    $errore = false;
-                } else {
-                    $msg = 'Tipo di file non permesso! Il file non è stato caricato.';
-                    $errore = true;
-                }
-            } else {
-                $msg = 'File non caricato!';
-                $errore = true;
-            }
+                    $errore = false;*/
         }
+        $errore=$msg='';
         return $this->render('ConsegnaElaboratiBundle:Default:upload.html.twig', array(
                     'errore' => $errore,
                     'messaggio' => $msg,
-                    'estensioni' => $estensioniPermesse
                 ));
     }
 

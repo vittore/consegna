@@ -38,7 +38,7 @@
 
 <form id='form'  action="{{ path('upload') }}" method="post" enctype="multipart/form-data">
 <h2 style="margin-top: -6px">File da consegnare:</h2>
-<input type="file" id="files[0]" name="files[0]" required="required"><br>
+<input type="file" id="form[files[0]]" name="form[files[0]]" required="required"><br>
 <div id="altri-file"></div>
 <div id="div-bottone-altro-file">
 <a href="javascript:void(0);" class="readmore" id="altro-file">+ aggiungi un file</a>
@@ -155,7 +155,7 @@ $("#form").submit();
 $(function(){
 $("#altro-file").click(function () {
 filesCount=filesCount+1;
-$("#altri-file").before("<input type=\"file\" id=\"files["+filesCount+"]\" name=\"files["+filesCount+"]\"><br>");
+$("#altri-file").before("<input type=\"file\" id=\"form[files["+filesCount+"]]\" name=\"form[files["+filesCount+"]]\"><br>");
 })
 })
 
