@@ -74,9 +74,5 @@ parameters:
        use_ssl: false
     consegna_elaborati:
        cartella: ../filesRepository
-       estensioni_permesse:
-           - zip
-           - pdf
-           - doc
-           - ai
+
     
