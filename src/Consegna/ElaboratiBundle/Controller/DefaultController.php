@@ -23,7 +23,7 @@ class DefaultController extends Controller {
      * @Template
      */
     public function indexAction() {
-        return $this->render('ConsegnaElaboratiBundle:Default:index.html.twig', array());
+                return $this->render('ConsegnaElaboratiBundle:Default:index.html.twig');
     }
 
     /**
@@ -40,8 +40,13 @@ class DefaultController extends Controller {
      */
     public function checkPasswordAction() {
         $request = $this->get('Request');
-        $username = $request->get('username');
-        $password = $request->get('password');
+        $username = $request->get('username',false);
+        $password = $request->get('password',false);
+        if ((!$username) or (!$password)) {
+$response = new Response(json_encode(array('stato'=>false)));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;            
+        }
         
         $adConfig = $this->container->getParameter('ad_ldap');
         
@@ -104,10 +109,12 @@ class DefaultController extends Controller {
      * @Template
      */
     public function listaCompitiAction() {
-        $request = $this->get('Request');
-        $username = $request->get('username');
-        $classe = $request->get('classe');
+        $request = $this->get('request');
+        $session = $this->getRequest()->getSession(); 
+        $username = $session->get('username');
+        $classe = $session->get('classe');
         $insegnante = $request->get('insegnante');
+        $session->set('insegnante',$insegnante);
         $consegnaConfig = $this->container->getParameter('consegna_elaborati');
         $dirConsegna = $consegnaConfig['cartella'];
         $dirConsegna = $dirConsegna . "/" . $classe . "/" . $insegnante;
@@ -123,19 +130,7 @@ class DefaultController extends Controller {
             if (substr($entry, 0, 8) == '[chiuso]') {
                 continue;
             }
-            $d2 = dir($dirConsegna . "/" . $entry);
-            $consegnato = false;
-            while (false !== ($entry2 = $d2->read())) {
-                if (substr($entry, 0, 1) == '.') {
-                    continue;
-                }
-                $nomeUtente = substr($entry2, 0, strrpos($entry2, '.'));
-                if ($nomeUtente == $username) {
-                    $consegnato = true;
-                }
-            }
-            $d2->close();
-            $compiti[] = array("value" => $entry, "consegnato" => $consegnato);
+            $compiti[] = $entry;
         }
         $d->close();
         
@@ -149,45 +144,34 @@ class DefaultController extends Controller {
      * @Template
      */
     public function uploadAction() {
-        $session = $this->getRequest()->getSession(); 
-        $form = $this->get('form.factory')
-                ->createBuilder('form')
-                ->add('files','file',array(
-                    "attr" => array(
-                        "multiple" => "multiple",
-                    )))
-                ->getForm();
-        
-        
-         
-        
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-$form->bindRequest($request);
-var_dump($form->isValid()) ;
+        $session = $this->getRequest()->getSession(); 
+        
             
                 $consegnaConfig = $this->container->getParameter('consegna_elaborati');
-                $files =  $form->get('files');
-                
-            var_dump($files['files']);
-                /*
-                $uploadedFiles = $files["files"]; //"dataFile" is the name on the field
-                //var_dump($files);
-                //die;
-                $ext = strtolower(substr($uploadedFile->getClientOriginalName(), strrpos($uploadedFile->getClientOriginalName(), '.') + 1));
-               
-                    $dirConsegna = $consegnaConfig['cartella'] . "/" .
-                            $data['classe'] . "/" .
-                            $data['insegnante'] . "/" .
-                            $data['compito'];
-                    $uploadedFile->move($dirConsegna, $data['username'] . '.' . $ext);
-                    $msg = 'File consegnato con successo!';
-                    $errore = false;*/
+            
+            
+        $fileBag = $this->get('request')->files->all();
+                $dirConsegna = $consegnaConfig['cartella'] . "/" .
+                            $session->get('classe') . "/" .
+                            $session->get('insegnante') . "/" .
+                            $request->get('hidden_compito'). "/" .
+                            $session->get('lastname') .' '.$session->get('firstname'). " " .date('Y-m-d H-i-s');
+        if (!file_exists($dirConsegna)) {
+            mkdir($dirConsegna);
         }
-        $errore=$msg='';
-        return $this->render('ConsegnaElaboratiBundle:Default:upload.html.twig', array(
-                    'errore' => $errore,
-                    'messaggio' => $msg,
+                        
+$filesName=array();
+        foreach ($fileBag['files'] as $uploadedFile) {
+            //$file->move(dove metto il file));
+        $filesName[]=$uploadedFile->getClientOriginalName();
+                    $uploadedFile->move($dirConsegna,$uploadedFile->getClientOriginalName());
+        }
+        return $this->render('ConsegnaElaboratiBundle:Default:upload.html.twig', 
+                array(
+                           'files' => $filesName,
+                    'compito'=>$request->get('hidden_compito'),
+                    'insegnante'=>$session->get('insegnante') 
                 ));
     }
 

@@ -33,12 +33,14 @@
 </div>
 
 
-<div id="div-form" style="display:none123" class="download">
+
+<div id="div-form" style="display:none" class="download">
 
 
 <form id='form'  action="{{ path('upload') }}" method="post" enctype="multipart/form-data">
-<h2 style="margin-top: -6px">File da consegnare:</h2>
-<input type="file" id="form[files[0]]" name="form[files[0]]" required="required"><br>
+    <input type=hidden id=hidden_compito name=hidden_compito>
+    <h2 style="margin-top: -6px">File da consegnare:</h2>
+<input type="file" id="files[0]" name="files[0]" required="required"><br>
 <div id="altri-file"></div>
 <div id="div-bottone-altro-file">
 <a href="javascript:void(0);" class="readmore" id="altro-file">+ aggiungi un file</a>
@@ -115,12 +117,7 @@ var selectElement = $("#compito");
         j=response.compiti;
      var options = '<option value="">Scegli...</option>';
       for (var i = 0; i < j.length; i++) {
-if (j[i].consegnato) {
-       options += '<option disabled value="' + j[i].value + '">' + j[i].value + '</option>';
-} else {
-       options += '<option value="' + j[i].value + '">' + j[i].value + '</option>';
-}
- 
+       options += '<option value="' + j[i] + '">' + j[i] + '</option>';
       }
       $("#compito").html(options);
 
@@ -135,7 +132,7 @@ if (j[i].consegnato) {
 
 $(function(){
 $("#compito").change(function () {
-$("#form_compito").val($('#compito').val());
+$("#hidden_compito").val($('#compito').val());
 $("#div-compito").html("<h2>Compito: <strong>" + $('#compito').val() + "</strong></h2>");
 
 $("#div-form").show();
@@ -155,7 +152,7 @@ $("#form").submit();
 $(function(){
 $("#altro-file").click(function () {
 filesCount=filesCount+1;
-$("#altri-file").before("<input type=\"file\" id=\"form[files["+filesCount+"]]\" name=\"form[files["+filesCount+"]]\"><br>");
+$("#altri-file").before("<input type=\"file\" id=\"files["+filesCount+"]\" name=\"files["+filesCount+"]\"><br>");
 })
 })
 

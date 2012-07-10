@@ -2,18 +2,19 @@
 
 {%block body %}
 
-{% if (errore) %}
 <div class="alert">
-{{ messaggio }}
-<p>
-Ti ricordo che i tipi di file che puoi caricare sono:
-</div>
-{% else %}
-<div class="info">
-{{ messaggio }}
+Bene.
+Hai consegnato a {{insegnante}} ({{ compito }}) i seguenti file: 
 
+<ul>
+ {%- for file in files %}
+<li>{{ file }}</li>
+{%- endfor %}
+</ul>
+<p>
+In bocca al lupo!
 </div>
-{% endif %}
+</div>
 <div id="div-bottone-consegna"  style="margin-left: 300px;">
 <a href="{{ path ('consegna') }}" class="readmore">
 Ritorna alla pagina precedente</a>
