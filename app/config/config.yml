@@ -73,6 +73,6 @@ parameters:
        real_primarygroup: true
        use_ssl: false
     consegna_elaborati:
-       cartella: ../filesRepository
+       cartella: /home/vittore/progetti/issm/consegna/filesRepository
 
     
